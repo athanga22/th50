@@ -1,18 +1,12 @@
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.TextField;
-import javafx.scene.image.Image;
+import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import javafx.scene.Scene;
 import javafx.scene.layout.VBox;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-
-import static com.sun.webkit.graphics.WCImage.getImage;
 
 public class LoginUI extends Application {
 
@@ -55,6 +49,29 @@ public class LoginUI extends Application {
         Button loginBtn = new Button("LOGIN");
         loginBtn.setStyle(buttonStyle);
 
+        // Functionality to validate the login fields
+        loginBtn.setOnAction((event) -> {
+            String email = emailField.getText();
+            String password = passwordField.getText();
+
+            if(email.isEmpty()) {
+                displayAlert("Login Failed", "Email can't be empty!");
+            }
+
+            if(password.isEmpty()) {
+                displayAlert("Login Failed", "Password can't be empty!");
+            }
+
+
+            boolean isValid = true;
+
+            if (isValid) {
+                displayAlert("Login Successful", "Welcome to the Office Automation System!");
+            } else {
+                displayAlert("Login Failed", "User not found. Please enter valid credentials.");
+            }
+        });
+
         VBox loginLayout = new VBox(10);
         loginLayout.getChildren().addAll(titleLayout, loginImage);
 
@@ -79,6 +96,26 @@ public class LoginUI extends Application {
         primaryStage.setScene(scene);
 
         primaryStage.show();
+    }
+
+    boolean validateEmail(String email) {
+        // Validate the input email from the database
+
+        return true;
+    }
+
+    boolean validatePassword(String password) {
+        // Validate the input password from the database
+
+        return true;
+    }
+
+    void displayAlert(String title, String message) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 
     public static void main(String[] args) {
