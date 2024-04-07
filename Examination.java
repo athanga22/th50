@@ -1,4 +1,3 @@
-package asuHelloWorldJavaFX;
 
 import java.awt.Insets;
 import java.util.HashMap;
@@ -26,8 +25,7 @@ public class Examination extends Application{
 			grid.setHgap(10);
 			grid.setVgap(10);
 			//grid.setPadding(new Insets(25, 25, 25, 25));
-			
-			// grid takes in  necessary info 
+			// grid takes in  necessary info
 			addFormField(grid, "Patient ID", 0);
 			addFormField(grid, "Heart Rate", 1);
 			
@@ -67,11 +65,11 @@ public class Examination extends Application{
 		        primaryStage.setScene(scene);
 
 		        primaryStage.show();
-		 
-		 
-		 
-		 
-		 
+
+
+
+
+
 		 }
 	 
 	 private void addFormField(GridPane grid, String labelText, int rowIndex) {
