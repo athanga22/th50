@@ -1,5 +1,3 @@
-package asuHelloWorldJavaFX;
-
 
 import javafx.application.Application;
 import javafx.scene.Scene;
@@ -68,11 +66,11 @@ public class Messages extends Application {
 
 	     primaryStage.setTitle("Messages");
 	     primaryStage.setScene(scene);
-	     primaryStage.show();   
-	        
-	        
-		
-		
+	     primaryStage.show();
+
+
+
+
 	}
 	
 	public static void main(String[] args) {
