@@ -11,7 +11,7 @@ import javafx.scene.layout.VBox;
 public class CreatePatientUI extends Application {
 
     @Override
-    public void start(Stage primaryStage) throws Exception {
+    public void start(Stage primaryStage) {
         primaryStage.setTitle("Office Automation System - Create Account");
 
         Label titleLabel = new Label("CREATE ACCOUNT");
@@ -103,9 +103,22 @@ public class CreatePatientUI extends Application {
         HBox passwordBox = new HBox(10, passwordLabel, passwordField);
         passwordBox.setAlignment(Pos.CENTER);
 
+        boolean isValid = true;
+        // TO-DO: Handle all the errors and update isValid.
+
         // Submit Button
         Button submitBtn = new Button("SUBMIT");
         submitBtn.setStyle(buttonStyle);
+
+        submitBtn.setOnAction(event -> {
+            if(isValid) {
+                displayAlert("Account creation successful", "Account created successfully. You can login now.", true);
+            }
+            else {
+                displayAlert("Account creation Failed", "Enter all valid fields.", false);
+            }
+            primaryStage.close();
+        });
 
         VBox createAccountLayout = new VBox(20);
         createAccountLayout.getChildren().addAll(titleLayout, loginImage);
@@ -135,5 +148,25 @@ public class CreatePatientUI extends Application {
 
     public static void main(String[] args) {
         launch(args);
+    }
+
+    void displayAlert(String title, String message, boolean status) {
+
+        Alert alert = new Alert(status ? Alert.AlertType.INFORMATION : Alert.AlertType.ERROR);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+
+        if(status) {
+            alert.showAndWait().ifPresent(response -> {
+                if (response == ButtonType.OK) {
+                    LoginUI loginPage = new LoginUI();
+                    loginPage.start(new Stage());
+                }
+            });
+        }
+        else{
+            alert.showAndWait();
+        }
     }
 }
