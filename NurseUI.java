@@ -121,6 +121,7 @@ public class NurseUI extends Application {
                     try {
                         int age = Integer.parseInt(ageField.getText());
                         // Check if age is not above 12
+
                         if (age <= 12) {
                             showAlert(Alert.AlertType.ERROR, primaryStage, "Age Error", "Age must be above 12.");
                         } else {
