@@ -29,16 +29,17 @@ public class LoginUI extends Application {
 
         String backgroundStyle = "-fx-background-color: #F0FFF0;";
         String buttonStyle = "-fx-background-color: #98FF98; -fx-text-fill: #005A31; -fx-font-size: 16px; -fx-font-weight: bold;";
+        String adjButtonStyle = "-fx-background-color: green; -fx-text-fill: white; -fx-font-size: 16px; -fx-font-weight: bold;";
 
-        Label emailLabel = new Label("EMAIL:");
-        TextField emailField = new TextField();
-        emailField.setPromptText("Email");
-        emailLabel.setMinWidth(100);
-        emailLabel.setStyle("-fx-font-size: 15px; -fx-font-weight: bold;");
-        HBox emailBox = new HBox(10, emailLabel, emailField);
-        emailBox.setAlignment(Pos.CENTER);
+        Label userIDLabel = new Label("User ID:");
+        TextField userIDField = new TextField();
+        userIDField.setPromptText("user ID");
+        userIDLabel.setMinWidth(100);
+        userIDLabel.setStyle("-fx-font-size: 15px; -fx-font-weight: bold;");
+        HBox userIDBox = new HBox(10, userIDLabel, userIDField);
+        userIDBox.setAlignment(Pos.CENTER);
 
-        Label passwordLabel = new Label("PASSWORD:");
+        Label passwordLabel = new Label("Password:");
         TextField passwordField = new PasswordField();
         passwordField.setPromptText("Password");
         passwordLabel.setMinWidth(100);
@@ -47,15 +48,22 @@ public class LoginUI extends Application {
         passwordBox.setAlignment(Pos.CENTER);
 
         Button loginBtn = new Button("LOGIN");
-        loginBtn.setStyle(buttonStyle);
+        Button forgotPWBtn = new Button("Forgot Password");
+        loginBtn.setStyle(adjButtonStyle);
+        forgotPWBtn.setStyle(buttonStyle);
+
+        Label newPatient = new Label("New Patient?");
+        newPatient.setStyle("-fx-font-size: 15px; -fx-font-weight: bold; -fx-text-fill: #3c9ac9;");
+        Button createAccountBtn = new Button("Create Account");
+        createAccountBtn.setStyle(adjButtonStyle);
 
         // Functionality to validate the login fields
         loginBtn.setOnAction((event) -> {
-            String email = emailField.getText();
+            String userID = userIDField.getText();
             String password = passwordField.getText();
 
-            if(email.isEmpty()) {
-                displayAlert("Login Failed", "Email can't be empty!");
+            if(userID.isEmpty()) {
+                displayAlert("Login Failed", "UserID can't be empty!");
             }
 
             if(password.isEmpty()) {
@@ -74,11 +82,18 @@ public class LoginUI extends Application {
 
         VBox loginLayout = new VBox(10);
         loginLayout.getChildren().addAll(titleLayout, loginImage);
-
         loginLayout.setAlignment(Pos.CENTER);
 
+        HBox loginForgot = new HBox(15);
+        loginForgot.getChildren().addAll(loginBtn, forgotPWBtn);
+        loginForgot.setAlignment(Pos.CENTER);
+
+        HBox createPatient = new HBox(15);
+        createPatient.getChildren().addAll(newPatient, createAccountBtn);
+        createPatient.setAlignment(Pos.CENTER);
+
         VBox fieldLayout = new VBox(10);
-        fieldLayout.getChildren().addAll(emailBox, passwordBox, loginBtn);
+        fieldLayout.getChildren().addAll(userIDBox, passwordBox, loginForgot);
         fieldLayout.setAlignment(Pos.CENTER);
         fieldLayout.setPadding(new Insets(20, 20, 20, 20));
         fieldLayout.setStyle("-fx-border-color: green; -fx-border-width: 2px;");
@@ -88,7 +103,7 @@ public class LoginUI extends Application {
         root.setAlignment(Pos.CENTER);
 
         VBox overallLayout = new VBox(10);
-        overallLayout.getChildren().addAll(loginLayout, root);
+        overallLayout.getChildren().addAll(loginLayout, root, createPatient);
         overallLayout.setStyle(backgroundStyle);
 
         Scene scene = new Scene(overallLayout, 600, 500);
@@ -98,8 +113,8 @@ public class LoginUI extends Application {
         primaryStage.show();
     }
 
-    boolean validateEmail(String email) {
-        // Validate the input email from the database
+    boolean validateUserID(String userID) {
+        // Validate the input userID from the database
 
         return true;
     }
