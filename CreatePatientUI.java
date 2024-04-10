@@ -61,7 +61,7 @@ public class CreatePatientUI extends Application {
         // Date of Birth
         Label dobLabel = new Label("Date of Birth:");
         TextField dobField = new TextField();
-        dobField.setPromptText("dd-mm-yyyy");
+        dobField.setPromptText("yyyy-mm-dd");
         dobLabel.setMinWidth(100);
         dobLabel.setStyle("-fx-font-size: 15px; -fx-font-weight: bold;");
         HBox dobBox = new HBox(10, dobLabel, dobField);
@@ -103,8 +103,7 @@ public class CreatePatientUI extends Application {
         HBox passwordBox = new HBox(10, passwordLabel, passwordField);
         passwordBox.setAlignment(Pos.CENTER);
 
-        boolean isValid = true;
-        // TO-DO: Handle all the errors and update isValid.
+        boolean isValid = validateFields(patientIDField.getText(), firstNameField.getText(), lastNameField.getText(), dobField.getText(), contactField.getText(), insIDField.getText(), userNameField.getText(), passwordField.getText());;
 
         // Submit Button
         Button submitBtn = new Button("SUBMIT");
@@ -148,6 +147,13 @@ public class CreatePatientUI extends Application {
 
     public static void main(String[] args) {
         launch(args);
+    }
+
+    private boolean validateFields(String patientID, String firstName, String lastName, String dob, String contact, String insID, String userName, String password) {
+        if (patientID.isEmpty() || firstName.isEmpty() || lastName.isEmpty() || dob.isEmpty() || contact.isEmpty() || insID.isEmpty() || userName.isEmpty() || password.isEmpty()) {
+            return false;
+        }
+        return true;
     }
 
     void displayAlert(String title, String message, boolean status) {
