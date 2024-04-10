@@ -34,7 +34,7 @@ public class LoginUI extends Application {
         String adjButtonStyle = "-fx-background-color: green; -fx-text-fill: white; -fx-font-size: 16px; -fx-font-weight: bold;";
 
         // Username
-        Label userNameLabel = new Label("User Name:");
+        Label userNameLabel = new Label("User Name/Email:");
         TextField userNameField = new TextField();
         userNameField.setPromptText("User name");
         userNameLabel.setMinWidth(100);
@@ -56,9 +56,10 @@ public class LoginUI extends Application {
         forgotPWBtn.setStyle(buttonStyle);
 
         forgotPWBtn.setOnAction(event -> {
-            ResetPasswordUI passwordForgot = new ResetPasswordUI();
-            passwordForgot.start(new Stage());
-            primaryStage.close();
+            Stage stage = new Stage();
+            stage.setTitle("Forgot Password");
+            stage.setScene(ResetPasswordUI.getScene());
+            stage.show();
         });
 
         Label newPatient = new Label("New Patient?");
@@ -67,9 +68,10 @@ public class LoginUI extends Application {
         createAccountBtn.setStyle(adjButtonStyle);
 
         createAccountBtn.setOnAction(event -> {
-            CreatePatientUI patientCreate = new CreatePatientUI();
-            patientCreate.start(new Stage());
-            primaryStage.close();
+            Stage stage = new Stage();
+            stage.setTitle("Create Account");
+            stage.setScene(CreatePatientUI.getScene());
+            stage.show();
         });
 
 
@@ -78,38 +80,43 @@ public class LoginUI extends Application {
             String userName = userNameField.getText();
             String password = passwordField.getText();
 
-            if(userName.isEmpty()) {
-                displayAlert("Login Failed", "UserID can't be empty!", false);
+            // Initial check for empty fields
+            if(userName.isEmpty() || password.isEmpty()) {
+                displayAlert("Login Failed", userName.isEmpty() ? "UserID can't be empty!" : "Password can't be empty!", false);
+                return; // Prevent further execution if either field is empty
             }
-
-            if(password.isEmpty()) {
-                displayAlert("Login Failed", "Password can't be empty!", false);
-            }
-
 
             boolean isValid = isValidLogin(userName, password);
 
-            if (isValid) {
-                displayAlert("Login Successful", "Welcome to the Office Automation System!", true);
-            } else {
+            if (!isValid) {
+                userNameField.setText("");
+                passwordField.setText("");
                 displayAlert("Login Failed", "User not found. Please enter valid credentials.", false);
+                return; // Prevent further execution if credentials are invalid
             }
+
+            // Proceed with user type check only if login is valid
+            displayAlert("Login Successful", "Welcome to the Office Automation System!", true);
+            userNameField.setText("");
+            passwordField.setText("");
 
             if(userName.endsWith("@doc.com")){
                 Stage stage = new Stage();
                 stage.setTitle("Doctor's View");
-                stage.setScene(DoctorUI.getScene());
+                stage.setScene(DoctorUI.getScene(userName));
                 stage.show();
             }
             else if(userName.endsWith("@nur.com")){
                 Stage stage = new Stage();
                 stage.setTitle("Nurse' View");
-                stage.setScene(NurseUI.getScene());
+                stage.setScene(NurseUI.getScene(userName));
                 stage.show();
             }
             else{
-                displayAlert("Login Failed", "Invalid user type.", false);
-                return;
+                Stage stage = new Stage();
+                stage.setTitle("Patient's View");
+                stage.setScene(PatientUI.getScene(userName));
+                stage.show();
             }
         });
 
@@ -148,7 +155,7 @@ public class LoginUI extends Application {
     private static boolean isValidLogin(String username, String password) {
         String query = "SELECT COUNT(*) FROM Employee WHERE Username = ? AND Password = ?";
         //Connection conn = DriverManager.getConnection("jdbc:mysql://localhost/th50", "root", "Frappe22$"
-        try (Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/OfficeAutomationSystem", "root", "Sarath@6");
+        try (Connection conn = DriverManager.getConnection("jdbc:mysql://localhost/th50", "root", "Frappe22$");
              PreparedStatement statement = conn.prepareStatement(query)) {
 
             statement.setString(1, username);

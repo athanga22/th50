@@ -8,11 +8,15 @@ import javafx.stage.Stage;
 import javafx.scene.Scene;
 import javafx.scene.layout.VBox;
 
+import java.sql.*;
+
 public class CreatePatientUI extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        primaryStage.setTitle("Office Automation System - Create Account");
+        //Present as part of extending an abstract class(Application)
+    }
+    public static Scene getScene() {
 
         Label titleLabel = new Label("CREATE ACCOUNT");
         titleLabel.setStyle("-fx-font-size: 30px; -fx-font-weight: bold;");
@@ -108,14 +112,24 @@ public class CreatePatientUI extends Application {
         submitBtn.setStyle(buttonStyle);
 
         submitBtn.setOnAction(event -> {
+            Stage currentStage = (Stage) ((Button) event.getSource()).getScene().getWindow();
+
             boolean isValid = validateFields(patientIDField.getText(), firstNameField.getText(), lastNameField.getText(), dobField.getText(), contactField.getText(), insIDField.getText(), userNameField.getText(), passwordField.getText());;
             if(isValid) {
                 if(!isValidDateFormat(dobField.getText())){
                     displayAlert("Invalid Date of Birth", "Date of birth must be in the format yyyy-mm-dd.", false);
                 }
                 else {
-                    displayAlert("Account creation successful", "Account created successfully. You can login now.", true);
-                    primaryStage.close();
+                    if(validPatient(Integer.parseInt(patientIDField.getText()))){
+                        insertDataIntoDatabaseRecords(patientIDField.getText(), firstNameField.getText(), lastNameField.getText(), contactField.getText(), insIDField.getText(), userNameField.getText(), passwordField.getText(), dobField.getText());
+                        insertDataIntoDatabase(userNameField.getText(), passwordField.getText());
+                        displayAlert("Account creation successful", "Account created successfully. You can login now.", true);
+                    }
+                    else{
+                        displayAlert("Invalid Patient ID","Entry on this patient does not exist.", false);
+                    }
+
+                    currentStage.close();
                 }
             }
             else{
@@ -143,18 +157,90 @@ public class CreatePatientUI extends Application {
         overallLayout.setStyle(backgroundStyle);
 
         Scene scene = new Scene(overallLayout, 900, 800);
-        //fieldLayout.maxWidthProperty().bind(scene.widthProperty().multiply(0.7));
-        primaryStage.setScene(scene);
-
-        primaryStage.show();
+        return scene;
     }
 
+    private static boolean validPatient(int patientID) {
+        //variables for establishing a database connection
+        String jdbcURL = "jdbc:mysql://localhost/th50";
+        String dbUser = "root";
+        String dbPassword = "Frappe22$";
+
+        //Query to execute
+        String query = "SELECT COUNT(*) FROM PatientVitals WHERE patientID = ?";
+
+        //try-catch block to deal with the database connection and check if the patient ID exists
+        try (Connection conn = DriverManager.getConnection(jdbcURL, dbUser, dbPassword);
+             PreparedStatement statement = conn.prepareStatement(query)) {
+
+            statement.setInt(1, patientID);
+
+            try (ResultSet rs = statement.executeQuery()) {
+                if (rs.next()) {
+                    int count = rs.getInt(1);
+                    return count > 0;
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+    private static void insertDataIntoDatabaseRecords(String patientId, String fn, String ln, String contact, String insId, String username, String password, String dob){
+        String jdbcURL = "jdbc:mysql://localhost/th50";
+        String dbUser = "root";
+        String dbPassword = "Frappe22$";
+
+        //Query to execute
+        String sql = "INSERT INTO PatientInfo (PatientId, FirstName, LastName, Contact, InsuranceId, Username, Password, DOB) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+
+        //try-catch block to deal with the database connection
+        try (Connection connection = DriverManager.getConnection(jdbcURL, dbUser, dbPassword);
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+
+            //Filling up the details into the query
+            statement.setInt(1, Integer.parseInt(patientId));
+            statement.setString(2, fn);
+            statement.setString(3, ln);
+            statement.setString(4, contact);
+            statement.setString(5, insId);
+            statement.setString(6, username);
+            statement.setString(7, password);
+            statement.setString(8, dob);
+
+            //Statement execution
+            statement.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    private static void insertDataIntoDatabase(String username, String password){
+        String jdbcURL = "jdbc:mysql://localhost/th50";
+        String dbUser = "root";
+        String dbPassword = "Frappe22$";
+
+        //Query to execute
+        String sql = "INSERT INTO Employee (Username, Password) VALUES (?, ?)";
+
+        //try-catch block to deal with the database connection
+        try (Connection connection = DriverManager.getConnection(jdbcURL, dbUser, dbPassword);
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+
+            //Filling up the details into the query
+            statement.setString(1, username);
+            statement.setString(2, password);
+
+            //Statement execution
+            statement.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
     public static void main(String[] args) {
         launch(args);
     }
 
-    private boolean validateFields(String... fields) {
-        //return !patientID.isEmpty() && !firstName.isEmpty() && !lastName.isEmpty() && !dob.isEmpty() && !contact.isEmpty() && !insID.isEmpty() && !userName.isEmpty() && !password.isEmpty();
+    private static boolean validateFields(String... fields) {
         for (String field : fields) {
             if (field.isEmpty()) {
                 return false;
@@ -163,7 +249,7 @@ public class CreatePatientUI extends Application {
         return true;
     }
 
-    private boolean isValidDateFormat(String dob) {
+    private static boolean isValidDateFormat(String dob) {
         String dateFormat = "\\d{4}-\\d{2}-\\d{2}"; // Expected format: yyyy-mm-dd
 
         // Check if the date of birth matches the expected format
@@ -173,7 +259,7 @@ public class CreatePatientUI extends Application {
         return true;
     }
 
-    void displayAlert(String title, String message, boolean status) {
+    private static void displayAlert(String title, String message, boolean status) {
 
         Alert alert = new Alert(status ? Alert.AlertType.INFORMATION : Alert.AlertType.ERROR);
         alert.setTitle(title);

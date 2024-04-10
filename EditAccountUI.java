@@ -7,14 +7,17 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.scene.Scene;
 import javafx.scene.layout.VBox;
+
+import java.sql.*;
 import java.util.Objects;
 
 public class EditAccountUI extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        primaryStage.setTitle("Office Automation System - Edit Account");
-        primaryStage.initModality(Modality.APPLICATION_MODAL); //To block the window until it is closed
+        //Present as part of extending an abstract class(Application)
+    }
+    public static Scene getScene(int patientId) {
 
         Label titleLabel = new Label("EDIT ACCOUNT");
         titleLabel.setStyle("-fx-font-size: 30px; -fx-font-weight: bold;");
@@ -53,16 +56,14 @@ public class EditAccountUI extends Application {
         updateBtn.setStyle(buttonStyle);
 
         updateBtn.setOnAction(event -> {
-            String userName = contactField.getText();
-            String newPassword = insIDField.getText();
+            Stage currentStage = (Stage) ((Button) event.getSource()).getScene().getWindow();
 
-            boolean isValid = true;
-
-            if (isValid) {
-                displayAlert("Password reset successful", "You can login now.", true);
-                primaryStage.close();
-            } else {
-                displayAlert("Login Failed", "User not found. Please enter valid credentials.", false);
+            try {
+                updateDatabase(patientId, contactField.getText(), insIDField.getText());
+                displayAlert("Details updated successfully", "Details updated successfully.", true);
+                currentStage.close();
+            } catch(Exception e) {
+                displayAlert("Update failure","Update unsuccessful",false);
             }
 
         });
@@ -80,16 +81,37 @@ public class EditAccountUI extends Application {
         overallLayout.setStyle(backgroundStyle);
 
         Scene scene = new Scene(overallLayout, 600, 500);
-        primaryStage.setScene(scene);
+        return scene;
+    }
 
-        primaryStage.show();
+    private static void updateDatabase(int patientId, String contact, String insId){
+        String query = "UPDATE PatientInfo SET Contact = ?, InsuranceId = ? WHERE PatientId = ?";
+
+        try (Connection conn = DriverManager.getConnection("jdbc:mysql://localhost/th50", "root", "Frappe22$");
+             PreparedStatement statement = conn.prepareStatement(query)) {
+
+            statement.setString(1, contact);
+            statement.setString(2, insId);
+            statement.setInt(3, patientId);
+
+            int affectedRows = statement.executeUpdate();
+
+            if (affectedRows > 0) {
+                System.out.println("Update successful, " + affectedRows + " rows affected.");
+            } else {
+                System.out.println("Update failed, no rows affected.");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            displayAlert("Update failure", "Update unsuccessful due to an error: " + e.getMessage(), false);
+        }
     }
 
     public static void main(String[] args) {
         launch(args);
     }
 
-    void displayAlert(String title, String message, boolean status) {
+    private static void displayAlert(String title, String message, boolean status) {
 
         Alert alert = new Alert(status ? Alert.AlertType.INFORMATION : Alert.AlertType.ERROR);
         alert.setTitle(title);
