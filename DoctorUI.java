@@ -1,26 +1,10 @@
 
 import javafx.application.Application;
-
-
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.scene.Scene;
-import javafx.scene.layout.StackPane;
-import javafx.scene.layout.BorderPane;
+
 import javafx.stage.Stage;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
-import javafx.scene.canvas.Canvas;
-import javafx.scene.canvas.GraphicsContext;
-
-import java.time.LocalDate;
-import java.util.HashMap;
-import java.util.Map;
-
-import javafx.scene.text.Font;
-import javafx.scene.text.Text;
-import javafx.scene.layout.GridPane;
 import javafx.geometry.*;
 import javafx.scene.control.*;
 
