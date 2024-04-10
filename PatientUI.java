@@ -52,6 +52,17 @@ public class PatientUI extends Application {
         btnSet2.getChildren().addAll(msgBtn, logoutBtn);
         btnSet2.setAlignment(Pos.CENTER);
 
+        editAccBtn.setOnAction((event -> {
+            Stage stage = new Stage();
+            stage.setTitle("Edit Account");
+            stage.setScene(ExamUI.getScene());
+            stage.show();
+        }));
+
+        msgBtn.setOnAction(event -> {
+
+        });
+
         logoutBtn.setOnAction(event -> {
             window.close();
             LoginUI loginPage = new LoginUI();

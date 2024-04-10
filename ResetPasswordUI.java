@@ -87,7 +87,6 @@ public class ResetPasswordUI extends Application {
                 displayAlert("Login Failed", "User not found. Please enter valid credentials.", false);
             }
 
-
         });
 
         VBox resetAccountLayout = new VBox(20);
