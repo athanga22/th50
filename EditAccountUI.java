@@ -3,6 +3,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.scene.Scene;
 import javafx.scene.layout.VBox;
@@ -13,6 +14,7 @@ public class EditAccountUI extends Application {
     @Override
     public void start(Stage primaryStage) {
         primaryStage.setTitle("Office Automation System - Edit Account");
+        primaryStage.initModality(Modality.APPLICATION_MODAL); //To block the window until it is closed
 
         Label titleLabel = new Label("EDIT ACCOUNT");
         titleLabel.setStyle("-fx-font-size: 30px; -fx-font-weight: bold;");

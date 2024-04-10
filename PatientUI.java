@@ -33,8 +33,8 @@ public class PatientUI extends Application {
         String backgroundStyle = "-fx-background-color: #F0FFF0;";
         String buttonStyle = "-fx-background-color: #98FF98; -fx-text-fill: #005A31; -fx-font-size: 16px; -fx-font-weight: bold;";
 
-        Button viewSumBtn = new Button("CONDUCT EXAM");
-        Button editAccBtn = new Button("VIEW RECORDS");
+        Button viewSumBtn = new Button("VIEW SUMMARY");
+        Button editAccBtn = new Button("EDIT ACCOUNT");
         Button msgBtn = new Button("MESSAGE");
         Button logoutBtn = new Button("LOGOUT");
 
@@ -53,14 +53,13 @@ public class PatientUI extends Application {
         btnSet2.setAlignment(Pos.CENTER);
 
         editAccBtn.setOnAction((event -> {
-            Stage stage = new Stage();
-            stage.setTitle("Edit Account");
-            stage.setScene(ExamUI.getScene());
-            stage.show();
+            EditAccountUI editAccount = new EditAccountUI();
+            editAccount.start(new Stage());
         }));
 
         msgBtn.setOnAction(event -> {
-
+            Messages msg = new Messages();
+            msg.start(new Stage());
         });
 
         logoutBtn.setOnAction(event -> {
