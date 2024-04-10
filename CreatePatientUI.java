@@ -103,20 +103,24 @@ public class CreatePatientUI extends Application {
         HBox passwordBox = new HBox(10, passwordLabel, passwordField);
         passwordBox.setAlignment(Pos.CENTER);
 
-        boolean isValid = validateFields(patientIDField.getText(), firstNameField.getText(), lastNameField.getText(), dobField.getText(), contactField.getText(), insIDField.getText(), userNameField.getText(), passwordField.getText());;
-
         // Submit Button
         Button submitBtn = new Button("SUBMIT");
         submitBtn.setStyle(buttonStyle);
 
         submitBtn.setOnAction(event -> {
+            boolean isValid = validateFields(patientIDField.getText(), firstNameField.getText(), lastNameField.getText(), dobField.getText(), contactField.getText(), insIDField.getText(), userNameField.getText(), passwordField.getText());;
             if(isValid) {
-                displayAlert("Account creation successful", "Account created successfully. You can login now.", true);
+                if(!isValidDateFormat(dobField.getText())){
+                    displayAlert("Invalid Date of Birth", "Date of birth must be in the format yyyy-mm-dd.", false);
+                }
+                else {
+                    displayAlert("Account creation successful", "Account created successfully. You can login now.", true);
+                    primaryStage.close();
+                }
             }
-            else {
+            else{
                 displayAlert("Account creation Failed", "Enter all valid fields.", false);
             }
-            primaryStage.close();
         });
 
         VBox createAccountLayout = new VBox(20);
@@ -149,8 +153,21 @@ public class CreatePatientUI extends Application {
         launch(args);
     }
 
-    private boolean validateFields(String patientID, String firstName, String lastName, String dob, String contact, String insID, String userName, String password) {
-        if (patientID.isEmpty() || firstName.isEmpty() || lastName.isEmpty() || dob.isEmpty() || contact.isEmpty() || insID.isEmpty() || userName.isEmpty() || password.isEmpty()) {
+    private boolean validateFields(String... fields) {
+        //return !patientID.isEmpty() && !firstName.isEmpty() && !lastName.isEmpty() && !dob.isEmpty() && !contact.isEmpty() && !insID.isEmpty() && !userName.isEmpty() && !password.isEmpty();
+        for (String field : fields) {
+            if (field.isEmpty()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private boolean isValidDateFormat(String dob) {
+        String dateFormat = "\\d{4}-\\d{2}-\\d{2}"; // Expected format: yyyy-mm-dd
+
+        // Check if the date of birth matches the expected format
+        if (!dob.matches(dateFormat)) {
             return false;
         }
         return true;

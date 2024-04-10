@@ -147,7 +147,8 @@ public class LoginUI extends Application {
 
     private static boolean isValidLogin(String username, String password) {
         String query = "SELECT COUNT(*) FROM Employee WHERE Username = ? AND Password = ?";
-        try (Connection conn = DriverManager.getConnection("jdbc:mysql://localhost/th50", "root", "Frappe22$");
+        //Connection conn = DriverManager.getConnection("jdbc:mysql://localhost/th50", "root", "Frappe22$"
+        try (Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/OfficeAutomationSystem", "root", "Sarath@6");
              PreparedStatement statement = conn.prepareStatement(query)) {
 
             statement.setString(1, username);
