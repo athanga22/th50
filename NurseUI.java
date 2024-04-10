@@ -112,16 +112,18 @@ public class NurseUI extends Application {
 
         saveButton.setOnAction(event -> {
             Stage currentStage = (Stage) ((Button) event.getSource()).getScene().getWindow();
+
             // Check if the ComboBox is not selected or the IDField is empty as base conditions
             if (ageQuestionComboBox.getSelectionModel().getSelectedItem() == null || IDField.getText().isEmpty()) {
-                showAlert(Alert.AlertType.ERROR, currentStage, "Validation Error", "All required fields must be filled out.");
+                showAlert(Alert.AlertType.ERROR, primaryStage, "Validation Error", "All required fields must be filled out.");
             } else if ("No".equals(ageQuestionComboBox.getSelectionModel().getSelectedItem())) {
-                showAlert(Alert.AlertType.ERROR, currentStage, "Validation Error", "No need of vitals for below 12.");
+                showAlert(Alert.AlertType.ERROR, primaryStage, "Validation Error", "No need of vitals for below 12.");
             } else {
                 // If "Yes" is selected but age field is empty or other fields are empty
                 if (ageField.getText().isEmpty() || weightField.getText().isEmpty() || heightField.getText().isEmpty() ||
                         BPField.getText().isEmpty() || tempField.getText().isEmpty()) {
-                    showAlert(Alert.AlertType.ERROR, currentStage, "Validation Error", "All fields must be filled out.");
+
+                    showAlert(Alert.AlertType.ERROR, primaryStage, "Validation Error", "All fields must be filled out.");
                 } else {
                     try {
                         int age = Integer.parseInt(ageField.getText());
@@ -131,7 +133,7 @@ public class NurseUI extends Application {
                             showAlert(Alert.AlertType.ERROR, currentStage, "Age Error", "Age must be above 12.");
                         } else {
                             // If all validations pass, insert data and show success message
-                            showAlert(Alert.AlertType.INFORMATION, currentStage, "Success", "Patient ID: " + IDField.getText() + " entry made successfully with vitals!");
+                            showAlert(Alert.AlertType.INFORMATION, primaryStage, "Success", "Patient ID: " + IDField.getText() + " entry made successfully with vitals!");
                             insertDataIntoDatabase(IDField.getText(), ageField.getText(), weightField.getText(), heightField.getText(), tempField.getText(), BPField.getText(), allergyField.getText(), concernField.getText());
                             // Clear fields after successful insertion
                             ageQuestionComboBox.setValue(null);
@@ -146,7 +148,8 @@ public class NurseUI extends Application {
                             concernField.setText("");
                         }
                     } catch (NumberFormatException e) {
-                        showAlert(Alert.AlertType.ERROR, currentStage, "Input Error", "Please enter a valid number for age.");
+
+                        showAlert(Alert.AlertType.ERROR, primaryStage, "Input Error", "Please enter a valid number for age.");
                     }
                 }
             }
