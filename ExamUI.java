@@ -8,6 +8,5 @@ public class ExamUI extends Application {
 
     }
     public static Scene getScene(){
-
     }
 }
