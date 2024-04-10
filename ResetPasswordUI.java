@@ -7,13 +7,18 @@ import javafx.stage.Stage;
 import javafx.scene.Scene;
 import javafx.scene.layout.VBox;
 
+import java.sql.*;
 import java.util.Objects;
 
 public class ResetPasswordUI extends Application {
 
+
     @Override
     public void start(Stage primaryStage) {
-        primaryStage.setTitle("Office Automation System - Reset Password");
+        //Present as part of extending an abstract class(Application)
+    }
+    public static Scene getScene() {
+
 
         Label titleLabel = new Label("RESET PASSWORD");
         titleLabel.setStyle("-fx-font-size: 30px; -fx-font-weight: bold;");
@@ -26,12 +31,11 @@ public class ResetPasswordUI extends Application {
 
         String backgroundStyle = "-fx-background-color: #F0FFF0;";
         String buttonStyle = "-fx-background-color: #98FF98; -fx-text-fill: #005A31; -fx-font-size: 16px; -fx-font-weight: bold;";
-        String adjButtonStyle = "-fx-background-color: green; -fx-text-fill: white; -fx-font-size: 16px; -fx-font-weight: bold;";
 
         // Username
-        Label userNameLabel = new Label("User Name:");
+        Label userNameLabel = new Label("User Name/Email:");
         TextField userNameField = new TextField();
-        userNameField.setPromptText("User name");
+        userNameField.setPromptText("User name/Email");
         userNameLabel.setMinWidth(125);
         userNameLabel.setStyle("-fx-font-size: 15px; -fx-font-weight: bold;");
         HBox userNameBox = new HBox(10, userNameLabel, userNameField);
@@ -61,6 +65,7 @@ public class ResetPasswordUI extends Application {
         resetBtn.setStyle(buttonStyle);
 
         resetBtn.setOnAction(event -> {
+            Stage currentStage = (Stage) ((Button) event.getSource()).getScene().getWindow();
             String userName = userNameField.getText();
             String newPassword = newPasswordField.getText();
             String confirmPassword = confirmPasswordField.getText();
@@ -78,13 +83,14 @@ public class ResetPasswordUI extends Application {
                 displayAlert("Login Failed", "Password can't be empty!", false);
             }
 
-            boolean isValid = true;
-
+            boolean isValid = isValidLogin(userName);
             if (isValid) {
+                updateDatabase(userName, confirmPassword);
                 displayAlert("Password reset successful", "You can login now.", true);
-                primaryStage.close();
+                currentStage.close();
             } else {
                 displayAlert("Login Failed", "User not found. Please enter valid credentials.", false);
+                currentStage.close();
             }
 
         });
@@ -109,16 +115,54 @@ public class ResetPasswordUI extends Application {
         overallLayout.setStyle(backgroundStyle);
 
         Scene scene = new Scene(overallLayout, 600, 500);
-        primaryStage.setScene(scene);
-
-        primaryStage.show();
+        return scene;
     }
 
+    private static void updateDatabase(String userid, String password){
+        String query = "UPDATE Employee SET Password = ? WHERE Username = ?";
+
+        try (Connection conn = DriverManager.getConnection("jdbc:mysql://localhost/th50", "root", "Frappe22$");
+             PreparedStatement statement = conn.prepareStatement(query)) {
+
+            statement.setString(1, password);
+            statement.setString(2, userid);
+
+            int affectedRows = statement.executeUpdate();
+
+            if (affectedRows > 0) {
+                System.out.println("Update successful, " + affectedRows + " rows affected.");
+            } else {
+                System.out.println("Update failed, no rows affected.");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            displayAlert("Update failure", "Update unsuccessful due to an error: " + e.getMessage(), false);
+        }
+    }
+    private static boolean isValidLogin(String username) {
+        String query = "SELECT COUNT(*) FROM Employee WHERE Username = ?";
+        //Connection conn = DriverManager.getConnection("jdbc:mysql://localhost/th50", "root", "Frappe22$"
+        try (Connection conn = DriverManager.getConnection("jdbc:mysql://localhost/th50", "root", "Frappe22$");
+             PreparedStatement statement = conn.prepareStatement(query)) {
+
+            statement.setString(1, username);
+
+            try (ResultSet rs = statement.executeQuery()) {
+                if (rs.next()) {
+                    int count = rs.getInt(1);
+                    return count > 0;
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
     public static void main(String[] args) {
         launch(args);
     }
 
-    void displayAlert(String title, String message, boolean status) {
+    private static void displayAlert(String title, String message, boolean status) {
 
         Alert alert = new Alert(status ? Alert.AlertType.INFORMATION : Alert.AlertType.ERROR);
         alert.setTitle(title);
