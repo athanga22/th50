@@ -9,13 +9,15 @@ import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 
 public class PatientUI extends Application {
+    static Stage window;
 
     @Override
     public void start(Stage primaryStage) {
         //Present as part of extending an abstract class(Application)
+        window = primaryStage;
         Scene scene = getScene();
-        primaryStage.setScene(scene);
-        primaryStage.show();
+        window.setScene(scene);
+        window.show();
     }
 
     public static Scene getScene() {
@@ -49,6 +51,12 @@ public class PatientUI extends Application {
         HBox btnSet2 = new HBox(30);
         btnSet2.getChildren().addAll(msgBtn, logoutBtn);
         btnSet2.setAlignment(Pos.CENTER);
+
+        logoutBtn.setOnAction(event -> {
+            window.close();
+            LoginUI loginPage = new LoginUI();
+            loginPage.start(new Stage());
+        });
 
         VBox layout = new VBox(10);
         layout.getChildren().addAll(titleLayout, btnSet1, btnSet2);
