@@ -8,6 +8,8 @@ import javafx.stage.Stage;
 import javafx.scene.Scene;
 import javafx.scene.layout.VBox;
 
+import java.sql.*;
+
 public class LoginUI extends Application {
 
     @Override
@@ -85,12 +87,29 @@ public class LoginUI extends Application {
             }
 
 
-            boolean isValid = true;
+            boolean isValid = isValidLogin(userName, password);
 
             if (isValid) {
                 displayAlert("Login Successful", "Welcome to the Office Automation System!", true);
             } else {
                 displayAlert("Login Failed", "User not found. Please enter valid credentials.", false);
+            }
+
+            if(userName.endsWith("@doc.com")){
+                Stage stage = new Stage();
+                stage.setTitle("Doctor's View");
+                stage.setScene(DoctorUI.getScene());
+                stage.show();
+            }
+            else if(userName.endsWith("@nur.com")){
+                Stage stage = new Stage();
+                stage.setTitle("Nurse' View");
+                stage.setScene(NurseUI.getScene());
+                stage.show();
+            }
+            else{
+                displayAlert("Login Failed", "Invalid user type.", false);
+                return;
             }
         });
 
@@ -123,20 +142,27 @@ public class LoginUI extends Application {
         Scene scene = new Scene(overallLayout, 600, 500);
         fieldLayout.maxWidthProperty().bind(scene.widthProperty().multiply(0.7));
         primaryStage.setScene(scene);
-
         primaryStage.show();
     }
 
-    boolean validateUserID(String userID) {
-        // Validate the input userID from the database
+    private static boolean isValidLogin(String username, String password) {
+        String query = "SELECT COUNT(*) FROM Employee WHERE Username = ? AND Password = ?";
+        try (Connection conn = DriverManager.getConnection("jdbc:mysql://localhost/th50", "root", "Frappe22$");
+             PreparedStatement statement = conn.prepareStatement(query)) {
 
-        return true;
-    }
+            statement.setString(1, username);
+            statement.setString(2, password);
 
-    boolean validatePassword(String password) {
-        // Validate the input password from the database
-
-        return true;
+            try (ResultSet rs = statement.executeQuery()) {
+                if (rs.next()) {
+                    int count = rs.getInt(1);
+                    return count > 0;
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 
     void displayAlert(String title, String message, boolean status) {
