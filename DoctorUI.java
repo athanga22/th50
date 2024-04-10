@@ -25,99 +25,48 @@ import javafx.geometry.*;
 import javafx.scene.control.*;
 
 public class DoctorUI extends Application {
-	
-	
-	private Map<String, TextField> fieldMap = new HashMap<>();
-	 public void start(Stage primaryStage) {
-	        Label label2 = new Label("Welcome Dr <doctor name> ");
-	        
-	        
-	        GridPane grid = new GridPane();
-			grid.setAlignment(Pos.CENTER);
-			grid.setHgap(10);
-			grid.setVgap(10);
-			grid.setPadding(new Insets(25, 25, 25, 25));
-			
-			GridPane.setConstraints(label2, 0, 0, 2, 1);
-			GridPane.setHalignment(label2, HPos.CENTER);
-			label2.setFont(new Font("Ariel", 20));
-			grid.getChildren().add(label2);
-			
-			
-			
-			
-			Button button1 = new Button("Patient List ");
-			button1.setStyle("-fx-background-color: lightblue; -fx-padding:10px");
-			button1.setMaxWidth(Double.MAX_VALUE);
-			GridPane.setHalignment(button1, HPos.CENTER);
-			GridPane.setConstraints(button1 , 0, 1);
-	        Button button2 = new Button("Messages");
-	        button2.setMaxWidth(Double.MAX_VALUE);
-	        button2.setStyle("-fx-background-color: lightblue; -fx-padding:10px");
-	        GridPane.setHalignment(button2, HPos.CENTER);
-	        GridPane.setConstraints(button2 , 0, 2);
-	        Button button3 = new Button("Past Appointments ");
-	        button3.setStyle("-fx-background-color: lightblue; -fx-padding:10px");
-	        button3.setMaxWidth(Double.MAX_VALUE);
-	        GridPane.setHalignment(button3, HPos.CENTER);
-	        GridPane.setConstraints(button3 , 0, 3);
-	        Button button4 =  new Button("Examination ");
-	        button4.setStyle("-fx-background-color: lightblue; -fx-padding:10px");
-	        button4.setMaxWidth(Double.MAX_VALUE);
-	        GridPane.setHalignment(button4, HPos.CENTER);
-	        GridPane.setConstraints(button4 , 0, 4);
-	        
-	        button1.setOnAction(event -> {
-	        	patientList patient = new patientList();
-	        	patient.start(new Stage());
-	        	primaryStage.close();
-	        });
-	        
-	        button2.setOnAction(event -> {
-	        	Messages message = new Messages();
-	        	message.start(new Stage());
-	        	primaryStage.close();
-	        });
-	        
-	        button3.setOnAction(event -> {
-	        	pastAppiontments pastApp = new pastAppiontments();
-	        	pastApp.start(new Stage());
-	        	primaryStage.close();
-	        });
-	        
-	        button4.setOnAction(event -> {
-	        	Examination calender = new Examination();
-	        	calender.start(new Stage());
-	        	primaryStage.close();
-	        });
-	        
-	        grid.getChildren().add(button1);
-	        grid.getChildren().add(button2);
-	        grid.getChildren().add(button3);
-	        grid.getChildren().add(button4);
 
-	        StackPane root = new StackPane();
-	       // root.getChildren().add(label);
-	        //root.getChildren().add(button);
+	@Override
+	public void start(Stage primaryStage) {
+		//Present as part of extending an abstract class(Application)
+	}
+	public static Scene getScene() {
+		Label titleLabel = new Label("HELLO DOCTOR");
+		titleLabel.setStyle("-fx-font-size: 30px; -fx-font-weight: bold;");
 
-	        Scene scene = new Scene(grid, 600, 500);
+		VBox titleLayout = new VBox();
+		titleLayout.setAlignment(Pos.CENTER);
+		titleLayout.setPadding(new Insets(10, 20, 20, 20));
+		titleLayout.getChildren().add(titleLabel);
 
-	        primaryStage.setTitle("Doctor Portal ");
-	        primaryStage.setScene(scene);
-	        primaryStage.show();
-	    }
+		String backgroundStyle = "-fx-background-color: #F0FFF0;";
+		String buttonStyle = "-fx-background-color: #98FF98; -fx-text-fill: #005A31; -fx-font-size: 16px; -fx-font-weight: bold;";
 
-	    public static void main(String[] args) {
-	        launch(args);
-	    }
-	    
-	    private void addFormField(GridPane grid, String labelText, int rowIndex) {
-			Label label = new Label(labelText);
-			TextField text = new TextField();
-			fieldMap.put(labelText, text);
-			grid.add(label, 0, rowIndex);
-			grid.add(text, 1, rowIndex);
-			
-		}
+		Button examButton = new Button("CONDUCT EXAM");
+		Button recordButton = new Button("VIEW RECORDS");
+		Button messageButton = new Button("MESSAGE");
 
+		configureButtonStyle(examButton, buttonStyle);
+		configureButtonStyle(recordButton, buttonStyle);
+		configureButtonStyle(messageButton, buttonStyle);
+
+		VBox layout = new VBox(10);
+		layout.getChildren().addAll(titleLabel, examButton, recordButton, messageButton);
+		layout.setAlignment(Pos.CENTER);
+		layout.setPadding(new Insets(20,20,20,20));
+		layout.setStyle(backgroundStyle);
+
+		return new Scene(layout, 1000, 800);
+	}
+
+	private static void configureButtonStyle(Button button, String style) {
+		//Visual style for the buttons
+		button.setMinWidth(300);
+		button.setMinHeight(100);
+		button.setStyle(style);
+
+	}
+	public static void main(String[] args) {
+
+	}
 }
