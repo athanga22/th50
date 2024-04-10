@@ -34,6 +34,13 @@ public class DoctorUI extends Application {
 		configureButtonStyle(recordButton, buttonStyle);
 		configureButtonStyle(messageButton, buttonStyle);
 
+		examButton.setOnAction(actionEvent -> {
+			Stage stage = new Stage();
+			stage.setTitle("Physical checkup");
+			stage.setScene(ExamUI.getScene());
+			stage.show();
+		});
+
 		VBox layout = new VBox(10);
 		layout.getChildren().addAll(titleLabel, examButton, recordButton, messageButton);
 		layout.setAlignment(Pos.CENTER);

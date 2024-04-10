@@ -162,7 +162,7 @@ public class NurseUI extends Application {
         layout.setPadding(new Insets(20,20,20,20));
         layout.setStyle(backgroundStyle);
 
-        return new Scene(layout, 1000, 8000);
+        return new Scene(layout, 1000, 800);
     }
 
     private static void insertDataIntoDatabase(String patientID, String age, String wt, String ht, String temp, String bp, String allergy, String concern) {
