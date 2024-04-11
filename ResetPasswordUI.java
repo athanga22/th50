@@ -163,16 +163,10 @@ public class ResetPasswordUI extends Application {
     }
 
     private static void displayAlert(String title, String message, boolean status) {
-
         Alert alert = new Alert(status ? Alert.AlertType.INFORMATION : Alert.AlertType.ERROR);
         alert.setTitle(title);
         alert.setHeaderText(null);
         alert.setContentText(message);
-        alert.showAndWait().ifPresent(response -> {
-            if (response == ButtonType.OK) {
-                LoginUI loginPage = new LoginUI();
-                loginPage.start(new Stage());
-            }
-        });
+        alert.showAndWait();
     }
 }
