@@ -53,6 +53,13 @@ public class DoctorUI extends Application {
 			stage.show();
 		});
 
+		messageButton.setOnAction(actionEvent -> {
+			Stage stage = new Stage();
+			stage.setTitle("MESSAGE");
+			stage.setScene(Messages.getScene(userName));
+			stage.show();
+		});
+
 		VBox layout = new VBox(10);
 		layout.getChildren().addAll(titleLabel, examButton, recordButton, messageButton);
 		layout.setAlignment(Pos.CENTER);

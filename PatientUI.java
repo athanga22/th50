@@ -44,7 +44,7 @@ public class PatientUI extends Application {
         messageButton.setOnAction(e->{
             Stage stage = new Stage();
             stage.setTitle("Message View");
-//            stage.setScene(Message.getScene());
+            stage.setScene(Messages.getScene(username));
             stage.show();
         });
 
